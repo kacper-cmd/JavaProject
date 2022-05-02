@@ -11,6 +11,7 @@ package commonClasses;
 public class Action {
    ActionType actionType;
    String actionParamsJSON;
+ 
 
     public ActionType getActionType() {
         return actionType;

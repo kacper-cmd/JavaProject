@@ -7,14 +7,12 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import commonClasses.*;
 import java.io.*;
-import java.text.*;
 import java.util.*;
 import java.net.*;
 import java.nio.file.Files;
 import java.nio.file.LinkOption;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 /**
@@ -23,10 +21,10 @@ import java.util.logging.Logger;
  */
 public class Server implements Runnable {
     Thread t;
-    ArrayList<Order> orders;
-    int lastOrderId ;
-    int lastUserId;
-    Menu menu;
+     ArrayList<Order> orders;
+    private int lastOrderId ;
+    private int lastUserId;
+    public Menu menu;
     ArrayList<User> users;
     public Server() {
         
@@ -36,13 +34,24 @@ public class Server implements Runnable {
         exit = false;
        
     }
-    public void addUser(User user){
+    public boolean addUser(User user){
+        for (int i = 0; i < users.size(); i++) {
+           if( users.get(i).getEmail().equals(user.getEmail())){
+               return false;
+           }
+         
+        }
         lastUserId++;
         user.setUserId(lastUserId);
+        user.setRank(Rank.StandardUser);
 users.add(user);
+return true;
     }
      public void addMenuItem(MenuItem menuItem){
         menu.addMenuItem(menuItem);
+    }
+        public void setMenu(Menu menu){
+        this.menu =menu;
     }
       public void editMenuItem(int indexmenuItem, MenuItem menuItem){
         menu.editMenuItem(indexmenuItem, menuItem);
@@ -53,11 +62,26 @@ users.add(user);
         order.setUserId(lastOrderId);
         orders.add(order);
     }
-        public void editOrder(Order order, int index){
-        if (index >= orders.size()) return;
+        public boolean editOrder(Order ord){
+                 
+                  int orderIndex= -1;
+
+            for (int i = 0; i < orders.size(); i++) {
+                var loopObject = orders.get(i);
+                if(loopObject.getOrderId() == ord.getOrderId()){
+                    orderIndex = i;
+                }
+            }
+            
+        if( orderIndex== -1){
+            return false;
+        }
+         orders.set(orderIndex, ord);
+         return true;
         
     }
     public  void start(){
+        
         Gson gson = new Gson();
         Path path = Paths.get("users.json");
           String fc; 
@@ -78,6 +102,9 @@ users.add(user);
           
              path = Paths.get("menu.json");
         }
+        else{
+            users = new ArrayList<>();
+        }
         if(Files.exists(path, LinkOption.NOFOLLOW_LINKS)){
    
             try {
@@ -92,6 +119,9 @@ users.add(user);
             {
                 menu = new Menu();
             }
+        }
+         else{
+            menu = new Menu();
         }
          path = Paths.get("orders.json");
         if(Files.exists(path, LinkOption.NOFOLLOW_LINKS)){
@@ -109,6 +139,9 @@ users.add(user);
                 orders = new ArrayList<>();
             }
         }
+         else{
+            orders = new ArrayList<>();
+        }
         if(users.isEmpty()){
             lastUserId =0;
         }else{
@@ -122,6 +155,8 @@ users.add(user);
             Collections.sort(orders);
             lastOrderId = orders.get(orders.size()-1).getUserId();
         }
+         
+        
         t.start();
     }
     
@@ -184,11 +219,19 @@ users.add(user);
 }
        Gson gson = new Gson();
        var userJSON = gson.toJson(users);
-       Files.writeString(Paths.get("users.json"), userJSON, StandardOpenOption.TRUNCATE_EXISTING);
+       FileWriter usersWriter = new FileWriter("users.json",false);
+      usersWriter.write(userJSON);
+      usersWriter.close();
   var menuJSON = gson.toJson(menu);
-       Files.writeString(Paths.get("menu.json"), menuJSON, StandardOpenOption.TRUNCATE_EXISTING);
+    FileWriter menuWriter = new FileWriter("menu.json",false);
+      menuWriter.write(menuJSON);
+      menuWriter.close();
+
          var ordersJSON = gson.toJson(orders);
-       Files.writeString(Paths.get("orders.json"), ordersJSON, StandardOpenOption.TRUNCATE_EXISTING);
+           FileWriter orderWriter = new FileWriter("orders.json",false);
+      orderWriter.write(ordersJSON);
+      orderWriter.close();
+
     
 }
 }

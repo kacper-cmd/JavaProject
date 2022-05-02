@@ -4,16 +4,22 @@
  */
 package server;
 
-import com.google.common.hash.Hashing;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import commonClasses.Action;
 import commonClasses.ActionType;
+import commonClasses.EditMenuActionResponse;
+import commonClasses.EditOrderActionResponse;
+import commonClasses.GetMenuResponse;
 import commonClasses.LoginActionResponse;
+import commonClasses.Menu;
+import commonClasses.Order;
+import commonClasses.Rank;
+import commonClasses.RegisterActionResponse;
+import commonClasses.SubmitOrderActionResponse;
 import commonClasses.User;
 import java.io.*;
 import java.net.*;
-import java.nio.charset.StandardCharsets;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -27,15 +33,17 @@ class ClientHandler extends Thread
     final BufferedReader clientInput;
     final BufferedWriter serverOutput;
     final Socket s;
-     final Server server;
-     Gson gson =new Gson();
+    final Server server;
+     User connectedUser;
+     boolean exit;
+     Gson gson = new Gson();
   
     // Constructor
-    public ClientHandler(Socket s, BufferedReader dis, BufferedWriter dos, Server server) 
+    public ClientHandler(Socket s, BufferedReader input, BufferedWriter output, Server server) 
     {
         this.s = s;
-        this.clientInput = dis;
-        this.serverOutput = dos;
+        this.clientInput = input;
+        this.serverOutput = output;
         this.server = server;
     }
     
@@ -45,17 +53,94 @@ class ClientHandler extends Thread
     {
         String received;
         
-        while (true) 
+        while (!exit) 
         {
             try {
+             
   received= clientInput.readLine();
-  
+                System.out.println("Processing client data "+received);
                 Action action = gson.fromJson(received, new TypeToken<Action>(){}.getType());
                 ActionType actionType = action.getActionType();
                 switch (actionType) {
                     case Login:
                         RespondToLogin(action);
                         break;
+                    case Logout:
+                        
+                        clientInput.close();
+                        serverOutput.close();
+                        s.close();
+                        exit = true;
+                        break;
+                    case GetMenu:
+                        if(connectedUser == null)
+                        {
+                            GetMenuResponse resp = new GetMenuResponse(server.menu);
+                            resp.setIsSuccess(false);
+                            sendToClient(resp);
+                        }
+                        GetMenuResponse resp = new GetMenuResponse(server.menu);
+                        resp.setIsSuccess(true);
+                        sendToClient(resp);
+                    
+                       break;
+                    case Register:
+                    {
+                      User user=  gson.fromJson(action.getActionParamsJSON(),new TypeToken<User>(){}.getType());
+                      var result = server.addUser(user);
+                      RegisterActionResponse rar = new RegisterActionResponse();
+                      rar.setSuccess(result);
+                        sendToClient(rar);
+                          break;
+                    }
+                    case SubmitOrder:
+                    {
+                        SubmitOrderActionResponse submitOrderActionResponse = new SubmitOrderActionResponse();
+                        if(connectedUser == null){
+                            
+                            submitOrderActionResponse.setSuccess(false);
+                            sendToClient(submitOrderActionResponse);
+                             break;
+                        }
+                        
+                        Order order=  gson.fromJson(action.getActionParamsJSON(),new TypeToken<Order>(){}.getType());
+                        server.addOrder(order, connectedUser);
+                        submitOrderActionResponse.setSuccess(true);
+                       break;
+                    }
+
+                        case EditMenu:{
+                            EditMenuActionResponse editMenuActionResponse = new EditMenuActionResponse();
+                            if(connectedUser == null || connectedUser.getRank()!= Rank.Admin){
+                                
+                                
+                                editMenuActionResponse.setSuccess(false);
+                                sendToClient(editMenuActionResponse);
+                                break;
+                            }
+                             Menu menu=  gson.fromJson(action.getActionParamsJSON(),new TypeToken<Menu>(){}.getType());
+                             server.setMenu(menu);
+                             editMenuActionResponse.setSuccess(true);
+                              sendToClient(editMenuActionResponse);
+                            break;
+                        }
+                            case EditOrder:{
+                                EditOrderActionResponse editOrderActionResponse = new EditOrderActionResponse();
+                                 if(connectedUser == null ){
+         
+                                editOrderActionResponse.setSuccess(false);
+                                sendToClient(editOrderActionResponse);
+                                break;
+                                                         
+                            }
+                                 Order order=  gson.fromJson(action.getActionParamsJSON(),new TypeToken<Order>(){}.getType());
+                                var result = server.editOrder(order);
+                                 editOrderActionResponse.setSuccess(result);
+                                 sendToClient(editOrderActionResponse);
+                                 break;
+                            }
+
+                        
                     default:
                         throw new AssertionError();
                 }
@@ -76,6 +161,7 @@ class ClientHandler extends Thread
      if(foundUser == null){
             actionResponse.setIsSuccess(false);
          sendToClient(actionResponse);  
+         return;
         }
       if(user.getPasswordHash().equals(foundUser.getPasswordHash()))
       {
@@ -83,22 +169,81 @@ class ClientHandler extends Thread
           actionResponse.setUserId(foundUser.getUserId());
           actionResponse.setRank(foundUser.getRank());
           sendToClient(actionResponse);
-         
+          connectedUser = foundUser;
           return;
       }
       actionResponse.setIsSuccess(false);
+
           sendToClient(actionResponse);
        
     }
 
     private void sendToClient(LoginActionResponse actionResponse) {
         String data = gson.toJson(actionResponse);
+        System.out.println("Sending data to client "+data);
         try {
-            serverOutput.write(data+"\r\n");
+            serverOutput.write(data+System.lineSeparator());
+            serverOutput.flush();
         } catch (IOException ex) {
             Logger.getLogger(ClientHandler.class.getName()).log(Level.SEVERE, null, ex);
         }
         
 
+    }
+
+    private void sendToClient(GetMenuResponse resp) {
+          String data = gson.toJson(resp);
+               System.out.println("Sending data to client "+data);
+        try {
+            serverOutput.write(data+System.lineSeparator());
+            serverOutput.flush();
+        } catch (IOException ex) {
+            Logger.getLogger(ClientHandler.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void sendToClient(RegisterActionResponse rar) {
+         String data = gson.toJson(rar);
+              System.out.println("Sending data to client "+data);
+        try {
+            serverOutput.write(data+System.lineSeparator());
+            serverOutput.flush();
+        } catch (IOException ex) {
+            Logger.getLogger(ClientHandler.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void sendToClient(SubmitOrderActionResponse submitOrderActionResponse) {
+          String data = gson.toJson(submitOrderActionResponse);
+               System.out.println("Sending data to client "+data);
+        try {
+            serverOutput.write(data+System.lineSeparator());
+            serverOutput.flush();
+        } catch (IOException ex) {
+            Logger.getLogger(ClientHandler.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void sendToClient(EditMenuActionResponse editMenuActionResponse) {
+       String data = gson.toJson(editMenuActionResponse);
+            System.out.println("Sending data to client "+data);
+        try {
+            serverOutput.write(data+System.lineSeparator());
+            serverOutput.flush();
+        } catch (IOException ex) {
+            Logger.getLogger(ClientHandler.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void sendToClient(EditOrderActionResponse editOrderActionResponse) {
+        String data = gson.toJson(editOrderActionResponse);
+             System.out.println("Sending data to client "+data);
+        
+        try {
+            serverOutput.write(data+System.lineSeparator());
+            serverOutput.flush();
+        } catch (IOException ex) {
+            Logger.getLogger(ClientHandler.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 }

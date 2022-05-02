@@ -12,6 +12,24 @@ public class Address {
     String houseNumber;
     String cityName;
     String areaCode;
+    String streetName;
+    String phoneNumber;
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
+    public String getStreetName() {
+        return streetName;
+    }
+
+    public void setStreetName(String streetName) {
+        this.streetName = streetName;
+    }
 
     public String getHouseNumber() {
         return houseNumber;
