@@ -124,6 +124,16 @@ var loginReponse = pizzaClient.Login(user);
 if(loginReponse.isIsSuccess()){
     userId = loginReponse.getUserId();
    rank = loginReponse.getRank();
+   
+    switch (rank) {
+        case Admin:
+            AdminMenu adminMenu = new AdminMenu(this, true, pizzaClient);
+            adminMenu.setVisible(true);
+            break;
+        case StandardUser:
+            DisplayOrdersDialog userMenu = new DisplayOrdersDialog(this, true,pizzaClient);
+            userMenu.setVisible(true);
+    }
 }
 
     }//GEN-LAST:event_loginButtonActionPerformed
