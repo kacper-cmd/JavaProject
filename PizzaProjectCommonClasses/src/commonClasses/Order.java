@@ -14,26 +14,25 @@ public class Order implements Comparable<Order>{
   int orderId;
     int userId;
     ArrayList<MenuItem> ordeitems;
-   OrderStatus orderStatus;
+  
 
-    public OrderStatus getOrderStatus() {
-        return orderStatus;
+    @Override
+    public String toString() {
+        return "Order{" + "orderId=" + orderId + ", userId=" + userId + ", ordeitems=" + ordeitems  + '}';
     }
 
-    public void setOrderStatus(OrderStatus orderStatus) {
-        this.orderStatus = orderStatus;
-    }
+   
     public Order(int orderId, int userId, ArrayList<MenuItem> ordeitems) {
         this.orderId = orderId;
         this.userId = userId;
         this.ordeitems = ordeitems;
-           orderStatus = OrderStatus.Ordered;
+           
     }
   public Order(int orderId, int userId) {
         this.orderId = orderId;
         this.userId = userId;
         ordeitems = new ArrayList<>();
-        orderStatus = OrderStatus.Ordered;
+       
     }
     public int getOrderId() {
         return orderId;

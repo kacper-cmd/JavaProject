@@ -28,6 +28,7 @@ public class AdminMenu extends javax.swing.JDialog {
 
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
+        logoutButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -45,16 +46,25 @@ public class AdminMenu extends javax.swing.JDialog {
             }
         });
 
+        logoutButton.setText("Logout");
+        logoutButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                logoutButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(103, 103, 103)
+                .addGap(29, 29, 29)
                 .addComponent(jButton1)
                 .addGap(18, 18, 18)
+                .addComponent(logoutButton)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 30, Short.MAX_VALUE)
                 .addComponent(jButton2)
-                .addContainerGap(91, Short.MAX_VALUE))
+                .addGap(63, 63, 63))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -62,7 +72,8 @@ public class AdminMenu extends javax.swing.JDialog {
                 .addContainerGap(197, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton1)
-                    .addComponent(jButton2))
+                    .addComponent(jButton2)
+                    .addComponent(logoutButton))
                 .addGap(81, 81, 81))
         );
 
@@ -79,9 +90,15 @@ public class AdminMenu extends javax.swing.JDialog {
         editMenuDialog.setVisible(true);
     }//GEN-LAST:event_jButton2ActionPerformed
 
+    private void logoutButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_logoutButtonActionPerformed
+      pizzaClient.Logout();
+      dispose();
+    }//GEN-LAST:event_logoutButtonActionPerformed
+
  
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
+    private javax.swing.JButton logoutButton;
     // End of variables declaration//GEN-END:variables
 }

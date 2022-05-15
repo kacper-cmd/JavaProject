@@ -4,18 +4,30 @@
  */
 package client;
 
+import commonClasses.*;
+import java.awt.Graphics;
+import java.util.ArrayList;
+import javax.swing.DefaultListModel;
+import javax.swing.JComponent;
+import javax.swing.JPanel;
+
 /**
  *
  * @author PC
  */
 public class UserMainUI extends javax.swing.JDialog {
-
-    /**
-     * Creates new form UserMainUI
-     */
-    public UserMainUI(java.awt.Frame parent, boolean modal) {
+PizzaClient client;
+ DefaultListModel<MenuItem> menuData;
+  DefaultListModel<MenuItem> clientOrderData;
+    public UserMainUI(java.awt.Frame parent, boolean modal,PizzaClient client) {
         super(parent, modal);
         initComponents();
+        this.client = client;
+        menuData = new DefaultListModel<>();
+        clientOrderData = new DefaultListModel<>();
+        orderList.setModel(clientOrderData);//after add to order 
+        menuList.setModel(menuData);//display elements after adding
+       
     }
 
     /**
@@ -27,14 +39,22 @@ public class UserMainUI extends javax.swing.JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        list1 = new java.awt.List();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
-        list2 = new java.awt.List();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
+        logoutButton = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        orderList = new javax.swing.JList<>();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        menuList = new javax.swing.JList<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowOpened(java.awt.event.WindowEvent evt) {
+                formWindowOpened(evt);
+            }
+        });
 
         jLabel1.setText("Menu:");
 
@@ -54,115 +74,133 @@ public class UserMainUI extends javax.swing.JDialog {
             }
         });
 
+        logoutButton.setText("Logout");
+        logoutButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                logoutButtonActionPerformed(evt);
+            }
+        });
+
+        jScrollPane1.setViewportView(orderList);
+
+        menuList.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
+            public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
+                menuListValueChanged(evt);
+            }
+        });
+        jScrollPane2.setViewportView(menuList);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jButton1)
-                        .addGap(209, 209, 209))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(83, 83, 83)
-                                .addComponent(jLabel1)
-                                .addGap(342, 342, 342)
-                                .addComponent(jLabel2))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(136, 136, 136)
-                                .addComponent(list1, javax.swing.GroupLayout.PREFERRED_SIZE, 241, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 71, Short.MAX_VALUE)))
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(list2, javax.swing.GroupLayout.PREFERRED_SIZE, 241, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(jButton2)
-                        .addGap(55, 55, 55)))
-                .addGap(77, 77, 77))
+                .addGap(242, 242, 242)
+                .addComponent(jButton1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jButton2)
+                .addGap(28, 28, 28)
+                .addComponent(logoutButton)
+                .addGap(30, 30, 30))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGap(35, 35, 35)
+                .addComponent(jLabel1)
+                .addGap(36, 36, 36)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 303, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 49, Short.MAX_VALUE)
+                .addComponent(jLabel2)
+                .addGap(40, 40, 40)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 303, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(48, 48, 48))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
+                        .addGap(9, 9, 9)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(list2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(list1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(21, 21, 21)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jButton2)
-                            .addComponent(jButton1)))
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(100, 100, 100)
+                        .addGap(43, 43, 43)
                         .addComponent(jLabel1))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(97, 97, 97)
+                        .addGap(48, 48, 48)
                         .addComponent(jLabel2)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jButton1)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jButton2)
+                        .addComponent(logoutButton)))
+                .addContainerGap(272, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
+       int selectedIndex = menuList.getSelectedIndex();
+if (selectedIndex != -1 &&(!menuList.isSelectionEmpty())) {
+    clientOrderData.addElement(menuData.elementAt(selectedIndex));
+      
+}
+
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        // TODO add your handling code here:
+        ArrayList<MenuItem> orderdata = new ArrayList<>();
+        for (int i = 0; i < menuList.getModel().getSize(); i++) {
+            orderdata.add(menuList.getModel().getElementAt(i));
+        }
+        client.createOrder(orderdata);
     }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void logoutButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_logoutButtonActionPerformed
+     client.Logout();
+     dispose();
+    }//GEN-LAST:event_logoutButtonActionPerformed
+
+    private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
+      var menuResponse =client.getMenu();
+        for (int i = 0; i < menuResponse.getMenu().getMenuItems().size(); i++) {
+            menuData.addElement(menuResponse.getMenu().getMenuItems().get(i));
+        }
+    }//GEN-LAST:event_formWindowOpened
+
+    private void menuListValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_menuListValueChanged
+ int selectedIndex = menuList.getSelectedIndex();
+if (selectedIndex != -1 &&(!menuList.isSelectionEmpty())) {
+  var bytes =  menuData.get(selectedIndex).getImage();
+  PhotoPanel photoPanel = new PhotoPanel(bytes);
+  //photoPanel.setBounds(WIDTH, WIDTH, WIDTH, HEIGHT);
+   photoPanel.setLocation(200, 218);
+
+  getContentPane().add(photoPanel);
+
+    photoPanel.print( getGraphics());
+    photoPanel.updateUI();
+
+    
+}
+    
+    }//GEN-LAST:event_menuListValueChanged
 
     /**
      * @param args the command line arguments
      */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(UserMainUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(UserMainUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(UserMainUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(UserMainUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
 
-        /* Create and display the dialog */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                UserMainUI dialog = new UserMainUI(new javax.swing.JFrame(), true);
-                dialog.addWindowListener(new java.awt.event.WindowAdapter() {
-                    @Override
-                    public void windowClosing(java.awt.event.WindowEvent e) {
-                        System.exit(0);
-                    }
-                });
-                dialog.setVisible(true);
-            }
-        });
-    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
-    private java.awt.List list1;
-    private java.awt.List list2;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JButton logoutButton;
+    private javax.swing.JList<MenuItem> menuList;
+    private javax.swing.JList<MenuItem> orderList;
     // End of variables declaration//GEN-END:variables
 }

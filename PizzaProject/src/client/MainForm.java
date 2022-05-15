@@ -131,7 +131,7 @@ if(loginReponse.isIsSuccess()){
             adminMenu.setVisible(true);
             break;
         case StandardUser:
-            DisplayOrdersDialog userMenu = new DisplayOrdersDialog(this, true,pizzaClient);
+            UserMainUI userMenu = new UserMainUI(this, true,pizzaClient);
             userMenu.setVisible(true);
     }
 }

@@ -23,11 +23,13 @@ import javax.swing.JPanel;
 public class PhotoPanel extends JPanel{
       @Override
    public void paint(Graphics g) {
+       
           try {
               InputStream is = new ByteArrayInputStream(photoBytes);
               BufferedImage newBi = ImageIO.read(is);
                     Graphics2D graphic2d = (Graphics2D) g;
-              graphic2d.drawImage(newBi, null, 0, 0);
+        var resizedImage = resizeImage(newBi, 500, 500);
+              graphic2d.drawImage(resizedImage, null, 200, 200);
 
           
           } catch (IOException ex) {
@@ -38,4 +40,11 @@ public class PhotoPanel extends JPanel{
    public PhotoPanel(byte [] bytes){
        photoBytes =bytes;
    }
+   BufferedImage resizeImage(BufferedImage originalImage, int targetWidth, int targetHeight) throws IOException {
+    BufferedImage resizedImage = new BufferedImage(targetWidth, targetHeight, BufferedImage.TYPE_INT_RGB);
+    Graphics2D graphics2D = resizedImage.createGraphics();
+    graphics2D.drawImage(originalImage, 0, 0, targetWidth, targetHeight, null);
+    graphics2D.dispose();
+    return resizedImage;
+}
 }

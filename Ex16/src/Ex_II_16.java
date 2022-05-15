@@ -126,7 +126,43 @@ class SubscriberListPanel extends JPanel
         subscribers.add(new Subscriber(new String[]{"Agata", "Kowalska","1111","2222","3333","4444","5555"}));
         subscribersJList.setListData(subscribers.toArray());
     }        
-
+ public void ExportSubscribersToFile(){
+        try {                
+                BufferedWriter out = new BufferedWriter(
+                        new OutputStreamWriter(new FileOutputStream("data.txt")));
+               if(subscribers != null && subscribers.size()>0)
+                 
+               for (int i = 0; i < subscribers.size(); i++) {
+                   Subscriber s = subscribers.get(i);
+                   for (int j = 0; j < Subscriber.LABELS.length; j++) {
+                       out.write(s.get(j)+';');
+                   }
+                   out.newLine();
+                   
+                   
+                 
+            }
+                out.close();
+        } catch (IOException ex) { System.out.println(ex); }
+        
+ }
+ public void loadSubscribersFromFile(){
+       File file = new File("data.txt");
+                    if(file.exists() && file.isFile()) {          
+                try (BufferedReader in = new BufferedReader(new FileReader(file))) {
+                    while(true) {
+                        String s = in.readLine();
+                        if(s == null) break;
+                        String data[] = s.split(";");
+                       
+                        var subscriber = new Subscriber(data);
+                        subscribers.add(subscriber);
+                         subscribersJList.setListData(subscribers.toArray());
+                    }
+                } catch(IOException ex) { System.out.println(ex); }
+ }
+ }
+ 
     // refreshing after edit
     public void save(Subscriber s) {
         // TO COMPLETE
@@ -300,7 +336,16 @@ saveAction.putValue(Action.ACCELERATOR_KEY,
  
 mData.setAction(saveAction);
 
-        
+        this.addWindowListener(new WindowAdapter(){
+             @Override
+                public void windowClosing(WindowEvent e){
+                   subscriberListPanel.ExportSubscribersToFile();
+                }
+                @Override
+                public void windowOpened(WindowEvent e) {
+                   subscriberListPanel.loadSubscribersFromFile();
+                }
+            });
         setSize(400,300);
         setVisible(true);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -325,34 +370,16 @@ mData.setAction(saveAction);
             }
                if (menuSelection == mSave){//First of these commands should write subscribers from container to file
                    System.out.println("Saving");
-                     try {                
-                BufferedWriter out = new BufferedWriter(
-                        new OutputStreamWriter(new FileOutputStream("data.txt")));
-               // for(Product p : products) {
-                   // out.write(p.getName() + ';' + p.getPrice() + '\n');
-                //}                                                
-                out.close();
-        } catch (IOException ex) { System.out.println(ex); }
+                   subscriberListPanel.ExportSubscribersToFile();
         
                     }
                if(menuSelection == mLoad){//second one should read them from the file to the container
                    System.out.println("Loading");
-                    File file = new File("products.txt");
-                    if(file.exists() && file.isFile()) {          
-                try (BufferedReader in = new BufferedReader(new FileReader(file))) {
-                    while(true) {
-                        String s = in.readLine();
-                        if(s == null) break;
-                        String data[] = s.split(";");
-                       // Product p = new Product(data[0], Float.valueOf(data[1]));
-                      //  products.add(p);
-                    }
-                } catch(IOException ex) { System.out.println(ex); }
-            
+                    subscriberListPanel.loadSubscribersFromFile();
            // selectedProductIndex = 0;
                     }
                    
-               }
+               
                   
                    
              

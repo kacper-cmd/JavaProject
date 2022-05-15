@@ -15,6 +15,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.*;
 import commonClasses.*;
+import java.util.ArrayList;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.filechooser.FileSystemView;
 
@@ -33,12 +34,14 @@ public class EditMenuDialog extends javax.swing.JDialog {
         super(parent, modal);
         initComponents();
         this.pizzaClient =pizzaClient;
-            listData =new DefaultListModel<>();
+        
+            listData = new DefaultListModel<>();
      var menuTemp=   pizzaClient.getMenu();
       menu =menuTemp.getMenu();
     var menuItemTemp=  menu.getMenuItems();
+  
     listData.addAll(menuItemTemp);
-    menuList = new JList<>(listData);
+    menuList.setModel(listData);
      
     }
 
@@ -169,14 +172,8 @@ public class EditMenuDialog extends javax.swing.JDialog {
             bytes = Files.readAllBytes(file.toPath());
         } catch (IOException ex) {
             ex.printStackTrace();  
-        }
-        
-        
+        }  
     listData.addElement(new MenuItem(name, ingredient, bytes, Double.valueOf(price)));
-      // menuList.setModel(listData);
-       //menuList.updateUI();
-         menuList.repaint();
-         
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void nameTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nameTextFieldActionPerformed
@@ -199,7 +196,14 @@ public class EditMenuDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-      
+var menuItems =new ArrayList<MenuItem>();
+
+        for (int i = 0; i < menuList.getModel().getSize(); i++) {
+            menuItems.add(menuList.getModel().getElementAt(i));
+        }
+menu.setMenuItems(menuItems);
+pizzaClient.editMenu(menu);
+//pizzaClient.editMenu();
 
 
         
@@ -209,7 +213,7 @@ public class EditMenuDialog extends javax.swing.JDialog {
    
 int selectedIndex = menuList.getSelectedIndex();
 if (selectedIndex != -1 &&(!menuList.isSelectionEmpty())) {
-    menuList.remove(selectedIndex);
+    listData.remove(selectedIndex);
       
 }
         

@@ -9,5 +9,5 @@ package commonClasses;
  * @author PC
  */
 public  enum  ActionType {
-    Login, Logout,Register, SubmitOrder, GetMenu, EditMenu, EditOrder
+    Login, Logout,Register, SubmitOrder, GetMenu, EditMenu, EditOrder,GetOrders
 }

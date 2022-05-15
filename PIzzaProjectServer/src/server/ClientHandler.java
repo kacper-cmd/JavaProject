@@ -11,6 +11,7 @@ import commonClasses.ActionType;
 import commonClasses.EditMenuActionResponse;
 import commonClasses.EditOrderActionResponse;
 import commonClasses.GetMenuResponse;
+import commonClasses.GetOrdersActionResponse;
 import commonClasses.LoginActionResponse;
 import commonClasses.Menu;
 import commonClasses.Order;
@@ -106,6 +107,23 @@ class ClientHandler extends Thread
                         Order order=  gson.fromJson(action.getActionParamsJSON(),new TypeToken<Order>(){}.getType());
                         server.addOrder(order, connectedUser);
                         submitOrderActionResponse.setSuccess(true);
+                        sendToClient(submitOrderActionResponse);
+                       break;
+                    }
+                     case GetOrders:
+                    {
+                        GetOrdersActionResponse getOrdersActionResponse = new GetOrdersActionResponse();
+                        if(connectedUser == null){
+                            
+                            getOrdersActionResponse.setSuccess(false);
+                            sendToClient(getOrdersActionResponse);
+                             break;
+                        }
+                        
+                       
+                        getOrdersActionResponse.setSuccess(true);
+                        getOrdersActionResponse.setOrders(server.orders);
+                        sendToClient(getOrdersActionResponse);
                        break;
                     }
 
@@ -149,6 +167,7 @@ class ClientHandler extends Thread
             } catch (IOException e) {
             }
         }
+        System.out.println("CLIENT EXITING");
           
     
        }
@@ -185,7 +204,7 @@ class ClientHandler extends Thread
             serverOutput.write(data+System.lineSeparator());
             serverOutput.flush();
         } catch (IOException ex) {
-            Logger.getLogger(ClientHandler.class.getName()).log(Level.SEVERE, null, ex);
+            ex.printStackTrace();  
         }
         
 
@@ -198,7 +217,7 @@ class ClientHandler extends Thread
             serverOutput.write(data+System.lineSeparator());
             serverOutput.flush();
         } catch (IOException ex) {
-            Logger.getLogger(ClientHandler.class.getName()).log(Level.SEVERE, null, ex);
+           ex.printStackTrace();  
         }
     }
 
@@ -209,7 +228,7 @@ class ClientHandler extends Thread
             serverOutput.write(data+System.lineSeparator());
             serverOutput.flush();
         } catch (IOException ex) {
-            Logger.getLogger(ClientHandler.class.getName()).log(Level.SEVERE, null, ex);
+            ex.printStackTrace();  
         }
     }
 
@@ -220,7 +239,7 @@ class ClientHandler extends Thread
             serverOutput.write(data+System.lineSeparator());
             serverOutput.flush();
         } catch (IOException ex) {
-            Logger.getLogger(ClientHandler.class.getName()).log(Level.SEVERE, null, ex);
+           ex.printStackTrace();  
         }
     }
 
@@ -231,7 +250,7 @@ class ClientHandler extends Thread
             serverOutput.write(data+System.lineSeparator());
             serverOutput.flush();
         } catch (IOException ex) {
-            Logger.getLogger(ClientHandler.class.getName()).log(Level.SEVERE, null, ex);
+            ex.printStackTrace();  
         }
     }
 
@@ -243,7 +262,17 @@ class ClientHandler extends Thread
             serverOutput.write(data+System.lineSeparator());
             serverOutput.flush();
         } catch (IOException ex) {
-            Logger.getLogger(ClientHandler.class.getName()).log(Level.SEVERE, null, ex);
-        }
+ex.printStackTrace();        }
+    }
+
+    private void sendToClient(GetOrdersActionResponse ordersActionResponse) {
+          String data = gson.toJson(ordersActionResponse);
+             System.out.println("Sending data to client "+data);
+        
+        try {
+            serverOutput.write(data+System.lineSeparator());
+            serverOutput.flush();
+        } catch (IOException ex) {
+ex.printStackTrace();        }
     }
 }

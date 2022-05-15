@@ -97,7 +97,7 @@ return null;
 return null;
      
     }
-    public SubmitOrderActionResponse createOrder(ArrayList list){
+    public SubmitOrderActionResponse createOrder(ArrayList<MenuItem> list){
         
          Order order = new Order(1, 2,list);
         var orderJson =  gson.toJson(order);
@@ -157,6 +157,36 @@ return null;
        
          
      }
+     public GetOrdersActionResponse getOrders(){
+        
+        Menu menu = new Menu();
+        var orderJson =  gson.toJson(menu);
+       var action = new Action();
+        action.setActionType(ActionType.GetOrders);
+       action.setActionParamsJSON(orderJson);
+      var getMenu= gson.toJson(action);
+             try {
+          
+          clientOutput.write(getMenu+System.lineSeparator());
+          clientOutput.flush();
+          while(true){
+              if(serveInput.ready()){
+                  
+                   var response = serveInput.readLine();
+              
+     GetOrdersActionResponse getOrdersActionResponse = gson.fromJson(response, GetOrdersActionResponse.class);
+      
+     return getOrdersActionResponse;
+              }
+          } 
+     
+      } catch (IOException ex) {
+          ex.printStackTrace();
+      }
+        return null;
+       
+         
+     }
      public EditOrderActionResponse editOrder(ArrayList list){
         
          Order order = new Order(1, 2,list);
@@ -188,9 +218,9 @@ return null;
          
      }
      
-      public EditMenuActionResponse editMenu (){
+      public EditMenuActionResponse editMenu ( Menu menu){
         
-         Menu menu = new Menu();
+       
         var editMenuJson =  gson.toJson(menu);
        var action = new Action();
         action.setActionType(ActionType.EditMenu);
@@ -218,6 +248,20 @@ return null;
        
          
      }
+      public void Logout(){
+          var action = new Action();
+        action.setActionType(ActionType.Logout);
+       
+            var logout= gson.toJson(action);
+
+             try {
+          
+          clientOutput.write(logout+System.lineSeparator());
+          clientOutput.flush();
+             }catch(IOException e){
+                 e.printStackTrace();
+             }
+      }
     }
   
 
