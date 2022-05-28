@@ -96,6 +96,13 @@ public class DisplayOrdersDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_formWindowOpened
 private void valueSelectedList(int index){
     displayOrdersDetailsTextArea.setText(orderData.get(index).toString());
+    String temp ="";
+    for(var orderitem : orderData.getElementAt(index).getOrdeitems()){
+        temp += orderitem.getName()+"\r\n";
+        
+    }
+    
+      displayOrdersDetailsTextArea.setText(temp);
 }
     /**
      * @param args the command line arguments

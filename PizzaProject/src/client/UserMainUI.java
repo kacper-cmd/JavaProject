@@ -151,8 +151,8 @@ if (selectedIndex != -1 &&(!menuList.isSelectionEmpty())) {
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         ArrayList<MenuItem> orderdata = new ArrayList<>();
-        for (int i = 0; i < menuList.getModel().getSize(); i++) {
-            orderdata.add(menuList.getModel().getElementAt(i));
+        for (int i = 0; i < clientOrderData.size(); i++) {
+            orderdata.add(clientOrderData.getElementAt(i));
         }
         client.createOrder(orderdata);
     }//GEN-LAST:event_jButton2ActionPerformed

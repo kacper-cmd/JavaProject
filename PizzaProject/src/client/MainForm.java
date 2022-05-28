@@ -24,7 +24,7 @@ Rank  rank = Rank.Unknown;
      */
     public MainForm() {
         initComponents();
-        pizzaClient = new PizzaClient("127.0.0.1", 5056);
+      
     }
 
     /**
@@ -112,6 +112,7 @@ if(userName.isEmpty() || password.isEmpty()){
     JOptionPane.showMessageDialog(null, "Please intup data");
     return;
 }
+  pizzaClient = new PizzaClient("127.0.0.1", 5056);
 password = Hashing
         .sha256()
         .hashString(password, StandardCharsets.UTF_8)
