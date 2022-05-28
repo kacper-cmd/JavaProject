@@ -17,7 +17,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 /**
  *
- * @author PC
+ * @author 20
  */
 public class Server implements Runnable {
     Thread t;
@@ -53,13 +53,13 @@ return true;
         public void setMenu(Menu menu){
         this.menu =menu;
     }
-      public void editMenuItem(int indexmenuItem, MenuItem menuItem){
-        menu.editMenuItem(indexmenuItem, menuItem);
-    }
+//      public void editMenuItem(int indexmenuItem, MenuItem menuItem){
+//        menu.editMenuItem(indexmenuItem, menuItem);
+//    }
        public void addOrder(Order order, User user){
                lastOrderId++;
                order.setUserId(user.getUserId());
-        order.setUserId(lastOrderId);
+        order.setOrderId(lastOrderId);
         orders.add(order);
     }
         public boolean editOrder(Order ord){
@@ -100,11 +100,12 @@ return true;
                 users = new ArrayList<>();
             }
           
-             path = Paths.get("menu.json");
+            
         }
         else{
             users = new ArrayList<>();
         }
+         path = Paths.get("menu.json");
         if(Files.exists(path, LinkOption.NOFOLLOW_LINKS)){
    
             try {
@@ -149,12 +150,12 @@ return true;
             lastUserId = users.get(users.size()-1).getUserId();
         }
        
-         if(orders.isEmpty()){
-            lastOrderId =0;
-        }else{
-            Collections.sort(orders);
-            lastOrderId = orders.get(orders.size()-1).getUserId();
-        }
+//         if(orders.isEmpty()){
+//            lastOrderId =0;
+//        }else{
+//            Collections.sort(orders);
+//            lastOrderId = orders.get(orders.size()-1).getUserId();
+//        }
          
         
         t.start();
